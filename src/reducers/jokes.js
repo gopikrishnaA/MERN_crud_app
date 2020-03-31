@@ -1,16 +1,16 @@
 import { createReducer } from 'redux-act'
-import {onSucessAction } from '../actions'
+import { onSucessAction } from '../actions'
 
 /** --------------------------------------------------
-*
-* Reducers
-*
-*/
+ *
+ * Reducers
+ *
+ */
 export const sampleReducer = {
   [onSucessAction]: (state, payload) => ({
     ...state,
-    ...payload
-  })
+    ...payload,
+  }),
 }
 
 const sampleInitialState = {
@@ -18,8 +18,8 @@ const sampleInitialState = {
   id: '',
   items: [],
   isCommentUpload: false,
-  isShow:false,
-  selectedId: -1
+  isShow: false,
+  selectedId: -1,
 }
 
 export default createReducer(sampleReducer, sampleInitialState)

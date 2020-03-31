@@ -10,21 +10,35 @@ class Pure extends Component {
     this.props.fetchJoke()
   }
   render () {
-    const {
-      id,
-      joke,
-      statusUpdate = () => {},
-      navigate = () => {}
-    } = this.props
+    const { id, joke,
+     statusUpdate = () => {},
+     navigate = () => {} } = this.props
     return (
       <div className='App'>
         <header className='App-header'>
           <p className='App-title'>{joke}</p>
-          <div className='App-button' >
-            <Button data-qa='like' onClick={() => statusUpdate({ id, joke, status: 'Like' })}>Like</Button>
-            <Button data-qa='unlike' onClick={() => statusUpdate({ id, joke, status: 'Unlike' })}>Unlike</Button>
-            <Button data-qa='summary' onClick={() => navigate()} >Summary</Button>
-            <Button data-qa='refresh'  onClick={() => statusUpdate({ id, joke, status: 'New' })} >Refresh</Button>
+          <div className='App-button'>
+            <Button
+              data-qa='like'
+              onClick={() => statusUpdate({ id, joke, status: 'Like' })}
+            >
+              Like
+            </Button>
+            <Button
+              data-qa='unlike'
+              onClick={() => statusUpdate({ id, joke, status: 'Unlike' })}
+            >
+              Unlike
+            </Button>
+            <Button data-qa='summary' onClick={() => navigate()}>
+              Summary
+            </Button>
+            <Button
+              data-qa='refresh'
+              onClick={() => statusUpdate({ id, joke, status: 'New' })}
+            >
+              Refresh
+            </Button>
           </div>
         </header>
       </div>
@@ -39,13 +53,17 @@ const state = ({ jokes }) => ({
 
 const dispatch = (dispatch) => ({
   fetchJoke: () => dispatch(fetchJokeData()),
-  statusUpdate: ({ id, joke, status }) => dispatch(updateJoke({ id, joke, status })),
-  navigate: () => dispatch(push('/summary'))
+  statusUpdate: ({ id, joke, status }) =>
+    dispatch(updateJoke({ id, joke, status })),
+  navigate: () => dispatch(push('/summary')),
 })
 
 Pure.propTypes = {
   joke: PropTypes.string.isRequired,
-  id: PropTypes.string.isRequired
+  id: PropTypes.string.isRequired,
+  fetchJoke: PropTypes.func,
+  statusUpdate: PropTypes.func,
+  navigate: PropTypes.func
 }
 
 export const LoginPage = connect(state, dispatch)(Pure)

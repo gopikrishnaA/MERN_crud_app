@@ -12,16 +12,16 @@ export const hideLoader = createAction('HIDE_LOADER')
 export const reducer = {
   [showLoader]: (state) => ({
     ...state,
-    loading: true
+    loading: true,
   }),
   [hideLoader]: (state) => ({
     ...state,
-    loading: false
-  })
+    loading: false,
+  }),
 }
 
 const initialState = {
-  loading: false
+  loading: false,
 }
 
 export default createReducer(reducer, initialState)

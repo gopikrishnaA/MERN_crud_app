@@ -1,18 +1,18 @@
-import React from "react";
-import { Alert, Button, Modal, InputGroup, FormControl } from "react-bootstrap";
-import "./modal.css";
-const deleteIcon = require("../../routes/Summary/delete.png");
+import React from 'react'
+import { Alert, Button, Modal, InputGroup, FormControl } from 'react-bootstrap'
+import './modal.css'
+const deleteIcon = require('../../routes/Summary/delete.png')
 
-const CustomModal = props => {
+const CustomModal = (props) => {
   const {
     comments = [],
-    commentText = "",
-    deleteComment = () => {}, 
+    commentText = '',
+    deleteComment = () => {},
     handleClose = () => {},
     handleSave = () => {},
     handleModalOnChange,
-    show
-  } = props;
+    show,
+  } = props
 
   return (
     <>
@@ -21,11 +21,11 @@ const CustomModal = props => {
           <Modal.Title>Comments</Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          <InputGroup className="mb-3">
+          <InputGroup className='mb-3'>
             <FormControl
               required
-              as="textarea"
-              placeholder="add comments..."
+              as='textarea'
+              placeholder='add comments...'
               onChange={handleModalOnChange}
               value={commentText}
               isValid={commentText.trim().length > 2}
@@ -35,20 +35,20 @@ const CustomModal = props => {
         <Modal.Footer>
           <Button
             disabled={commentText.trim().length < 3}
-            variant="primary"
+            variant='primary'
             onClick={handleSave}
           >
             Save
           </Button>
         </Modal.Footer>
-        <div className="comment_section">
+        <div className='comment_section'>
           {comments.map((item, id) => (
-            <Alert key={`${item.id}-${id}`} variant="info" className='alert'>
+            <Alert key={`${item.id}-${id}`} variant='info' className='alert'>
               <div>{item.comment}</div>
               <img
-                className="del_icon"
+                className='del_icon'
                 src={deleteIcon}
-                alt=""
+                alt=''
                 onClick={() => deleteComment(item)}
               />
             </Alert>
@@ -56,7 +56,7 @@ const CustomModal = props => {
         </div>
       </Modal>
     </>
-  );
-};
+  )
+}
 
-export default CustomModal;
+export default CustomModal

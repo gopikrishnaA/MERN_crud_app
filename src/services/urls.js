@@ -1,5 +1,3 @@
-const baseUrl = 'https://icanhazdadjoke.com';
+const baseUrl = 'https://icanhazdadjoke.com'
 
-export {
-    baseUrl
-}
+export { baseUrl }
