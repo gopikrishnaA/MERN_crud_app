@@ -4,6 +4,7 @@ import { connect } from 'react-redux'
 import { push } from 'react-router-redux'
 import { Button } from 'react-bootstrap'
 import { fetchJokeData, updateJoke } from '../../actions'
+import Sequence from '../../components/SequenceComponent'
 import './App.css'
 class Pure extends Component {
   componentDidMount () {
@@ -40,6 +41,7 @@ class Pure extends Component {
               Refresh
             </Button>
           </div>
+          <Sequence />
         </header>
       </div>
     )

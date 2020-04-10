@@ -1,0 +1,12 @@
+.col {
+    background-color: lightsalmon;
+    height: 45px;
+    margin: 10px;
+    width: 45px;
+  }
+  .no_col {
+    background-color: transparent;
+    height: 45px;
+    margin: 10px;
+    width: 45px;
+  }
