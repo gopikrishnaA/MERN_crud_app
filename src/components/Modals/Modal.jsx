@@ -1,4 +1,5 @@
 import React from 'react'
+import Proptypes from 'prop-types'
 import { Alert, Button, Modal, InputGroup, FormControl } from 'react-bootstrap'
 import './modal.css'
 const deleteIcon = require('../../routes/Summary/delete.png')
@@ -57,6 +58,16 @@ const CustomModal = (props) => {
       </Modal>
     </>
   )
+}
+
+CustomModal.propTypes = {
+  comments: Proptypes.array,
+  commentText: Proptypes.string,
+  deleteComment: Proptypes.func,
+  handleClose: Proptypes.func,
+  handleSave: Proptypes.func,
+  handleModalOnChange: Proptypes.func,
+  show: Proptypes.bool
 }
 
 export default CustomModal

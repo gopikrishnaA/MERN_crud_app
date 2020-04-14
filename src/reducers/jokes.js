@@ -14,12 +14,14 @@ export const sampleReducer = {
 }
 
 const sampleInitialState = {
+  commentText: '',
   joke: 'Loading ....',
   id: '',
   items: [],
-  isCommentUpload: false,
   isShow: false,
+  isSort: false,
   selectedId: -1,
+  selectedvalue: 'All'
 }
 
 export default createReducer(sampleReducer, sampleInitialState)

@@ -17,6 +17,7 @@ import {
 import CustomModal from '../../components/Modals/Modal'
 import 'react-confirm-alert/src/react-confirm-alert.css'
 import './summary.css'
+import { getItems } from './selectedItemsFilter'
 const deleteIcon = require('./delete.png')
 const downArrow = require('./down.png')
 const upArrow = require('./up.png')
@@ -25,10 +26,7 @@ class Pure extends Component {
   constructor (props) {
     super(props)
     this.state = {
-      value: '',
-      items: this.props.existingItems,
-      isSort: false,
-      isDeleteEnabled: true,
+      isDeleteDisabled: true,
       isChecked: false,
     }
     this.handleChange = this.handleChange.bind(this)
@@ -42,76 +40,28 @@ class Pure extends Component {
     this.props.getJokes()
   }
 
-  // To do:: update latest life cycle methods
-  componentWillReceiveProps (nextProps) {
-    if (
-      JSON.stringify(nextProps.existingItems) !==
-      JSON.stringify(this.props.existingItems)
-    ) {
-      this.setState({ items: nextProps.existingItems })
-    }
-  }
-  // static getDerivedStateFromProps(nextProps, prevState) {
-  //   if (JSON.stringify(nextProps.items) !==
-  // JSON.stringify(prevState.items)) {
-  //     return { items: nextProps.items };
-  //   }
-  //   return null;
-  // }
-  componentDidUpdate (prevProps) {
-    const { isCommentUpload, onSuccessComment } = this.props
-    if (prevProps.isCommentUpload !== isCommentUpload) {
-      // eslint-disable-next-line react/no-did-update-set-state
-      this.setState({ commentText: '' })
-      onSuccessComment({ isCommentUpload: false })
-    }
-  }
-
   handleChange (event) {
     const value = event.target.value
-    const totalItems = this.props.existingItems
-    this.setState({
-      value,
-      items:
-        value === 'All' ? totalItems :
-         totalItems.filter((item) => item.status === value),
-    })
+    this.props.onUpdateState({ selectedvalue: value })
   }
 
   onSortTimeStamp () {
-    const totalItems = this.state.items
-    const isSort = !this.state.isSort
-    this.setState({
-      isSort,
-      items: totalItems.sort((a, b) => {
-        return isSort
-          ? a.createDate < b.createDate
-            ? -1
-            : a.createDate > b.createDate
-            ? 1
-            : 0
-          : a.createDate > b.createDate
-          ? -1
-          : a.createDate < b.createDate
-          ? 1
-          : 0
-      }),
-    })
+    const { isSort, onUpdateState } = this.props
+    onUpdateState({ isSort: !isSort })
   }
 
   onDeleteHandler () {
-    const updatedItems = this.state.items
+    const { items } = this.props
+    const updatedItems = items
       .filter((item) => item.checked)
       .reduce((acc, item) => {
         acc.push(item.id)
         return acc
       }, [])
     this.props.deleteSelectedJoke(updatedItems)
-    const { items } = this.state
     this.setState({
-      items,
       isChecked: false,
-      isDeleteEnabled: true,
+      isDeleteDisabled: true,
     })
   }
 
@@ -136,15 +86,17 @@ class Pure extends Component {
     const {
       target: { checked },
     } = event
-    const items = this.state.items.map((item) => ({
+    const { items, onUpdateState } = this.props
+    const updatedItems = items.map((item) => ({
       ...item,
       checked,
     }))
-    const updatedItemsLength = items.filter((item) => item.checked).length
+    onUpdateState({ items: updatedItems })
+    const updatedItemsLength =
+      updatedItems.filter((item) => item.checked).length
     this.setState({
       isChecked: checked,
-      items,
-      isDeleteEnabled: updatedItemsLength === 0,
+      isDeleteDisabled: updatedItemsLength === 0,
     })
   }
 
@@ -152,22 +104,23 @@ class Pure extends Component {
     const {
       target: { checked },
     } = event
-    const { items } = this.state
-    const updateItems = items.map((item) => {
+    const { items, onUpdateState } = this.props
+    const updatedItems = items.map((item) => {
       const value = item.id === id ? checked : item.checked
       return { ...item, checked: value }
     })
+    onUpdateState({ items: updatedItems })
 
-    const updatedItemsLength = updateItems.filter((item) => item.checked).length
+    const updatedItemsLength =
+      updatedItems.filter((item) => item.checked).length
     const isChecked = updatedItemsLength === items.length
     this.setState({
-      items: updateItems,
       isChecked,
-      isDeleteEnabled: updatedItemsLength === 0,
+      isDeleteDisabled: updatedItemsLength === 0,
     })
   }
   handleClose = () => {
-    this.props.onSuccessComment({
+    this.props.onUpdateState({
       isShow: false,
       selectedId: -1,
     })
@@ -179,25 +132,27 @@ class Pure extends Component {
     })
   }
   handleInput = (event) => {
-    this.setState({
+    this.props.onUpdateState({
       commentText: event.target.value,
     })
   }
 
   render () {
-    const { commentText, isChecked,
-       isDeleteEnabled, isSort, items, value } = this.state
+    const { isChecked, isDeleteDisabled } = this.state
     const {
       comments,
-      existingItems,
+      commentText,
+      items,
       isShow,
+      isSort,
       deleteComment,
       selectedId,
       navigate,
       navigateToHome,
       updateComment,
+      selectedvalue
     } = this.props
-    if (existingItems.length === 0) {
+    if (items.length === 0 && selectedvalue === 'All') {
       return [
         <h2 className='header'>Summary</h2>,
         <h6 className='header'>
@@ -224,9 +179,9 @@ class Pure extends Component {
         <h2 className='header'>Summary</h2>
         <div className='buttonDiv'>
           <Button
-            variant={isDeleteEnabled ? 'secondary' : 'success'}
-            className={isDeleteEnabled ? 'deleteBtnDisabled' : 'deleteBtn'}
-            disabled={isDeleteEnabled}
+            variant={isDeleteDisabled ? 'secondary' : 'success'}
+            className={isDeleteDisabled ? 'deleteBtnDisabled' : 'deleteBtn'}
+            disabled={isDeleteDisabled}
             onClick={() => this.deleteJoke()}
           >
             Delete
@@ -239,10 +194,7 @@ class Pure extends Component {
               <th className='th2'>JokeId</th>
               <th className='th3'>Joke</th>
               <th className='th4'>
-                <select value={value} onChange={this.handleChange}>
-                  <option value='' selected disabled hidden>
-                    Filter By
-                  </option>
+                <select value={selectedvalue} onChange={this.handleChange}>
                   <option value='New'>New</option>
                   <option value='Like'>Like</option>
                   <option value='Unlike'>Unlike</option>
@@ -259,7 +211,7 @@ class Pure extends Component {
                 <input
                   type='checkbox'
                   checked={isChecked}
-                  onClick={this.selectAllHandler}
+                  onChange={this.selectAllHandler}
                   id='deleteAll'
                   name='deleteAll'
                 />
@@ -269,7 +221,7 @@ class Pure extends Component {
           <tbody>
             {items.map((item, i) => {
               return (
-                <tr data-qa={`tr${item.id}`} key={i}>
+                <tr data-qa={`tr${item.id}`} key={item.id}>
                   <td>{i + 1}</td>
                   <td className='td1' onClick={() => navigate(item.id)}>
                     {item.id}
@@ -299,11 +251,9 @@ class Pure extends Component {
                   <td>
                     <input
                       type='checkbox'
-                      id={item.id}
-                      name='deleteAll'
-                      value={item.id}
-                      checked={item.checked}
-                      onClick={(e) => this.selectHandler(e, item.id)}
+                      name='deleteItem'
+                      checked={item.checked || false}
+                      onChange={(e) => this.selectHandler(e, item.id)}
                     />
                   </td>
                 </tr>
@@ -317,11 +267,13 @@ class Pure extends Component {
 }
 
 const mapStateToProps = ({ jokes }) => ({
-  existingItems: jokes.items,
-  isCommentUpload: jokes.isCommentUpload,
+  commentText: jokes.commentText,
+  items: getItems(jokes),
   isShow: jokes.isShow,
+  isSort: jokes.isSort,
   comments: jokes.comments,
   selectedId: jokes.selectedId,
+  selectedvalue: jokes.selectedvalue,
 })
 
 const mapDispatchToProps = (dispatch) => ({
@@ -332,24 +284,26 @@ const mapDispatchToProps = (dispatch) => ({
   getJokes: () => dispatch(getJokes()),
   navigate: (payload) => dispatch(fetchJokeData(payload)),
   navigateToHome: () => dispatch(push('/login')),
-  onSuccessComment: (payload) => dispatch(onSucessAction(payload)),
+  onUpdateState: (payload) => dispatch(onSucessAction(payload)),
   updateComment: (payload) => dispatch(updateComment(payload)),
 })
 
 Pure.propTypes = {
-  isCommentUpload: Proptypes.bool,
   isShow: Proptypes.bool,
+  isSort: Proptypes.bool,
   comments: Proptypes.array,
-  selectedId: Proptypes.string,
+  commentText: Proptypes.string,
+  selectedId: Proptypes.number,
   deleteComment: Proptypes.func,
   deleteJoke: Proptypes.func,
   deleteSelectedJoke: Proptypes.func,
-  existingItems: Proptypes.array,
   getComments: Proptypes.func,
-  getJokes: () => Proptypes.func,
+  getJokes: Proptypes.func,
+  items: Proptypes.array,
   navigate: Proptypes.func,
   navigateToHome: Proptypes.func,
-  onSuccessComment: Proptypes.func,
+  onUpdateState: Proptypes.func,
+  selectedvalue: Proptypes.string,
   updateComment: Proptypes.func
 }
 

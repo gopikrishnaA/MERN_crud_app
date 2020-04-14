@@ -67,11 +67,11 @@ exports.delete = function(req, res) {
     {
       id: req.params.joke_id
     },
-    function(err, joke) {
+    function(err) {
       if (err) res.send(err);
       Comment.deleteMany(
         {
-          joke_id: req.body.items
+          joke_id: req.params.joke_id
         },
         function(err, joke) {
           if (err) res.send(err);
@@ -92,7 +92,7 @@ exports.deleteSelected = function(req, res) {
     {
       id: req.body.items
     },
-    function(err, joke) {
+    function(err) {
       if (err) res.send(err);
       Comment.deleteMany(
         {

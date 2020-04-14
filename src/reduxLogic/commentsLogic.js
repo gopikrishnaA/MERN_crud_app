@@ -46,7 +46,7 @@ const updateComments = createLogic({
       requestData,
     })
       .then(() => {
-        dispatch(Actions.onSucessAction({ isCommentUpload: true }))
+        dispatch(Actions.onSucessAction({ commentText: '' }))
         dispatch(
           Actions.getComments({
             selectedId: selectedId,
