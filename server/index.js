@@ -8,7 +8,7 @@ let mongoose = require('mongoose');
 let app = express();
 
 // Import routes
-let apiRoutes = require("./api-routes");
+let apiRoutes = require('./api-routes');
 // Configure bodyparser to handle post requests
 
 // parse application/x-www-form-urlencoded
@@ -24,20 +24,22 @@ mongoose.connect('mongodb://localhost/test_db', {
 });
 
 // Heroku Mongoose connection
-// mongoose.connect('mongodb://heroku_5686p02g:sia8l3fni4jmu7qbn0ac1t75mf@ds349857.mlab.com:49857/heroku_5686p02g', { useNewUrlParser: true });
+// mongoose.connect('mongodb://heroku_5686p02g:sia8l3fni4jmu7qbn0ac1t75mf
+//@ds349857.mlab.com:49857/heroku_5686p02g',
+// { useNewUrlParser: true });
 
-var db = mongoose.connection;
+let db = mongoose.connection;
 
 // Added check for DB connection
 
 db.on('error', console.error.bind(console, 'connection error:'));
 db.once('open', () => {
 	// we're connected!
-	console.log("MongoDB database connection established successfully");
+	console.info('MongoDB database connection established successfully');
 });
 
 // Setup server port
-var port = process.env.PORT || 8080;
+let port = process.env.PORT || 8080;
 
 // Send message for default URL
 app.get('/', (req, res) => res.send('Hello World with Express'));
@@ -46,5 +48,5 @@ app.get('/', (req, res) => res.send('Hello World with Express'));
 app.use('/api', apiRoutes);
 // Launch app to listen to specified port
 app.listen(port, function () {
-	console.log("Running RestHub on port " + port);
+	console.info('Running RestHub on port ' + port);
 });

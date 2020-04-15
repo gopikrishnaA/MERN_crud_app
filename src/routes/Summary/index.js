@@ -153,17 +153,19 @@ class Pure extends Component {
       selectedvalue
     } = this.props
     if (items.length === 0 && selectedvalue === 'All') {
-      return [
-        <h2 className='header'>Summary</h2>,
-        <h6 className='header'>
-          No Summary data to display go back to home and do actions on jokes
-        </h6>,
-        <div className='buttonDiv'>
-          <Button className='deleteBtn' onClick={() => navigateToHome()}>
-            Home
-          </Button>
-        </div>,
-      ]
+      return (
+        <div>
+          <h2 className='header'>Summary</h2>
+          <h6 className='header'>
+            No Summary data to display go back to home and do actions on jokes
+          </h6>
+          <div className='buttonDiv'>
+            <Button className='deleteBtn' onClick={() => navigateToHome()}>
+              Home
+            </Button>
+          </div>
+        </div>
+      )
     }
     return (
       <>

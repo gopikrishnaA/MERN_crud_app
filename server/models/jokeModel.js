@@ -1,7 +1,7 @@
 // contactModel.js
-var mongoose = require('mongoose');
+let mongoose = require('mongoose');
 // Setup schema
-var jokeSchema = mongoose.Schema({
+let jokeSchema = mongoose.Schema({
   id: {
     type: String,
     required: true
@@ -21,12 +21,12 @@ var jokeSchema = mongoose.Schema({
   comments: [
     {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "Comments"
+      ref: 'Comments'
     }
   ]
 });
 // Export Contact model
-var Joke = module.exports = mongoose.model('jokes', jokeSchema);
+let Joke = module.exports = mongoose.model('jokes', jokeSchema);
 module.exports.get = function (callback, limit) {
   Joke.find(callback).limit(limit);
 }

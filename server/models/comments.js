@@ -1,7 +1,7 @@
 // contactModel.js
-var mongoose = require('mongoose');
+let mongoose = require('mongoose');
 // Setup schema
-var schema = mongoose.Schema({
+let schema = mongoose.Schema({
   joke_id: {
     type: String,
     required: true
